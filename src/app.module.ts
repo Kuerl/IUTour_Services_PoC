@@ -1,10 +1,10 @@
+import { PoCModule } from './modules/PoC/poc.module';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { DatabaseModule } from './modules/infrastructures/database/database.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [DatabaseModule, PoCModule],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {}
+export class MainModule {}
