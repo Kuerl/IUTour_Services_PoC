@@ -1,8 +1,9 @@
+import { MainConfig } from './configs/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { MainModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  const app = await NestFactory.create(MainModule);
+  await app.listen(MainConfig.mainPort);
 }
 bootstrap();
