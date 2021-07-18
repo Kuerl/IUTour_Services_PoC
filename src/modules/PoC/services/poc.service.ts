@@ -1,28 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { PoCEntity } from '../entities/poc.entity';
+import { PoCRepository } from '../repositories/poc.repository';
 
 @Injectable()
 export class PoCService {
-  getData() {
-    return 'getData';
+  constructor(private poCRepository: PoCRepository) {}
+  getData(): Promise<PoCEntity[]> {
+    return this.poCRepository.find({ select: ['id', 'username', 'status'] });
   }
 
-  createData() {
-    return 'createData';
+  createData(dataEntity: PoCEntity): Promise<PoCEntity> {
+    return this.poCRepository.save(dataEntity);
   }
 
-  getDataById() {
-    return 'getDataById';
+  getDataById(PoCId: number): Promise<PoCEntity[]> {
+    return this.poCRepository.find({ where: { id: PoCId } });
   }
 
-  updateDataById() {
-    return 'updateDataById';
+  updateDataById(PoCId: number, dataEntity: PoCEntity) {
+    return this.poCRepository.update({ id: PoCId }, dataEntity);
   }
 
-  removeDataById() {
-    return 'removeDataById';
-  }
-
-  modifyDataById() {
-    return 'modifyDataById';
+  removeDataById(PoCId: number) {
+    return this.poCRepository.delete(PoCId);
   }
 }

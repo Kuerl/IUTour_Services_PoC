@@ -1,5 +1,10 @@
+import { Length, IsString } from 'class-validator';
+
 export class PoCDto {
-  id: number;
+  @IsString()
+  @Length(6, 40, { message: 'Invalid Input' })
   username: string;
+
+  @IsString()
   status: string;
 }

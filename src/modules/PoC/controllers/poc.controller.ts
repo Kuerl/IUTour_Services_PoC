@@ -1,7 +1,21 @@
 import { PoCService } from './../services/poc.service';
-import { Controller, Delete, Get, Patch, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Param,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { PoCDto } from '../common/dtos/poc.dto';
+import { plainToClass } from 'class-transformer';
+import { PoCEntity } from '../entities/poc.entity';
 
 @Controller('poc')
+@UsePipes(new ValidationPipe())
 export class PoCController {
   constructor(private poCService: PoCService) {}
 
@@ -11,27 +25,25 @@ export class PoCController {
   }
 
   @Post()
-  createData() {
-    return this.poCService.createData();
+  createData(@Body() data: PoCDto) {
+    const dataEntity = plainToClass(PoCEntity, data);
+    return this.poCService.createData(dataEntity);
   }
 
   @Get(':id')
-  getDataById() {
-    return this.poCService.getDataById();
+  getDataById(@Param('id') PoCId: number) {
+    console.log(PoCId);
+    return this.poCService.getDataById(PoCId);
   }
 
   @Put(':id')
-  updateDataById() {
-    return this.poCService.updateDataById();
+  updateDataById(@Param('id') PoCId: number, @Body() data: PoCDto) {
+    const dataEntity = plainToClass(PoCEntity, data);
+    return this.poCService.updateDataById(PoCId, dataEntity);
   }
 
   @Delete(':id')
-  removeDataById() {
-    return this.poCService.removeDataById();
-  }
-
-  @Patch(':id')
-  modifyDataById() {
-    return this.poCService.modifyDataById();
+  removeDataById(@Param('id') PoCId: number) {
+    return this.poCService.removeDataById(PoCId);
   }
 }
