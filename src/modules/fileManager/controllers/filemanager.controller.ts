@@ -4,6 +4,8 @@ import {
   Get,
   Param,
   Post,
+  Put,
+  Delete,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -13,13 +15,13 @@ import { FileManagerService } from '../services/filemanager.service';
 import { storageImage } from '../../../configs/config';
 import { UpDto } from '../common/dtos/filemanager.dto';
 
-@Controller('upload')
+@Controller('file')
 export class FileManagerController {
   constructor(private fileManagerService: FileManagerService) {}
 
-  @Get()
-  getAllImage() {
-    return this.fileManagerService.getAllImage();
+  @Get(':user')
+  getAllImageByUser(@Param('user') user: string) {
+    return this.fileManagerService.getAllImage(user);
   }
 
   @Post()
@@ -31,5 +33,19 @@ export class FileManagerController {
   @Get(':image')
   getImage(@Param('image') image: string, @Res() res) {
     return res.sendFile(image, { root: 'uploads/images' });
+  }
+
+  @Put(':image')
+  @UseInterceptors(FileInterceptor('image', storageImage))
+  updateImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('image') image: string
+  ) {
+    return this.fileManagerService.updateImage(file, image);
+  }
+
+  @Delete(':image')
+  removeImage(@Param('image') image: string) {
+    return this.fileManagerService.removeImage(image);
   }
 }
