@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
+import { ApiBody } from '@nestjs/swagger';
 
 export const MainConfig = {
   mainPort: process.env.MAIN_PORT,
@@ -17,3 +18,23 @@ export const storageImage = {
     },
   }),
 };
+
+export const ApiFile =
+  (fileName = 'file', user_id = 'user_id'): MethodDecorator =>
+  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    ApiBody({
+      schema: {
+        type: 'object',
+        properties: {
+          [fileName]: {
+            type: 'string',
+            format: 'binary',
+          },
+          [user_id]: {
+            type: 'number',
+            format: 'decimal',
+          },
+        },
+      },
+    })(target, propertyKey, descriptor);
+  };
