@@ -39,12 +39,14 @@ export class FileManagerService {
 
   async updateImage(
     file: Express.Multer.File,
-    image: string
+    image: string,
+    user_id: number
   ): Promise<FileManagerEntity> {
     const willBeUpdatedImage = await this.fileManagerRepository.findOne({
       where: { id: image },
+      relations: ['user'],
     });
-    if (!willBeUpdatedImage) {
+    if (!willBeUpdatedImage || willBeUpdatedImage.user.id !== user_id) {
       throw new BadRequestException();
     }
     const imageInfor = plainToClass(FileManagerEntity, { id: file.filename });
@@ -55,11 +57,12 @@ export class FileManagerService {
     });
   }
 
-  async removeImage(image: string) {
+  async removeImage(image: string, user_id: number) {
     const willBeRemovedImage = await this.fileManagerRepository.findOne({
       where: { id: image },
+      relations: ['user'],
     });
-    if (!willBeRemovedImage) {
+    if (!willBeRemovedImage || willBeRemovedImage.user.id !== user_id) {
       throw new BadRequestException();
     }
     return this.fileManagerRepository.delete(image);
