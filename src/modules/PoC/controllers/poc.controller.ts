@@ -32,7 +32,6 @@ export class PoCController {
 
   @Get(':id')
   getDataById(@Param('id') PoCId: number) {
-    console.log(PoCId);
     return this.poCService.getDataById(PoCId);
   }
 
