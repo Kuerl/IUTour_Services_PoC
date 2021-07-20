@@ -1,3 +1,1 @@
-git config core.autocrlf false
-git rm --cached -r .
-git reset --hard
+THIS BRANCH WILL NOT BE MERGED :)
