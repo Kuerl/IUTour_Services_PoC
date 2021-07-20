@@ -5,7 +5,7 @@ export class PoCDto {
   @ApiProperty({
     type: String,
     description: 'PoC DTO: Username',
-    default: '',
+    default: 'NEED TO CHANGE',
   })
   @IsString()
   @Length(6, 40, { message: 'Invalid Input' })
@@ -14,7 +14,7 @@ export class PoCDto {
   @ApiProperty({
     type: String,
     description: 'PoC DTO: Status',
-    default: '',
+    default: 'active',
   })
   @IsString()
   status: string;

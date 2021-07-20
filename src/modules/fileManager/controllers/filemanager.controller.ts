@@ -63,15 +63,16 @@ export class FileManagerController {
   @UseInterceptors(FileInterceptor('image', storageImage))
   updateImage(
     @UploadedFile() file: Express.Multer.File,
-    @Param('image') image: string
+    @Param('image') image: string,
+    @Body() body: UpDto
   ) {
-    return this.fileManagerService.updateImage(file, image);
+    return this.fileManagerService.updateImage(file, image, body.user_id);
   }
 
   @Delete(':image')
   @ApiOkResponse({ description: 'SUCCESSFULL RESPONSE: Delete a file.' })
   @ApiForbiddenResponse({ description: 'FORBIDDEN.' })
-  removeImage(@Param('image') image: string) {
-    return this.fileManagerService.removeImage(image);
+  removeImage(@Param('image') image: string, @Body() body: UpDto) {
+    return this.fileManagerService.removeImage(image, body.user_id);
   }
 }
