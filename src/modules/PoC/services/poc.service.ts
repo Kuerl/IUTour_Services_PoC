@@ -14,9 +14,9 @@ export class PoCService {
       where: { username: dataEntity.username },
     });
     if (!userExistedQuery) {
-      throw new BadRequestException();
+      return this.poCRepository.save(dataEntity);
     }
-    return this.poCRepository.save(dataEntity);
+    throw new BadRequestException();
   }
 
   async getDataById(PoCId: number): Promise<PoCEntity> {
@@ -36,13 +36,14 @@ export class PoCService {
     const userExistedQuery = await this.poCRepository.findOne({
       where: { id: PoCId },
     });
-    const userExistedQueryByUsername = await this.poCRepository.findOne({
-      where: { username: dataEntity.username },
-    });
-    if (!userExistedQuery || !userExistedQueryByUsername) {
+    if (
+      !userExistedQuery ||
+      (userExistedQuery.username == dataEntity.username &&
+        userExistedQuery.status == dataEntity.status)
+    ) {
       throw new BadRequestException();
     }
-    this.poCRepository.update({ id: PoCId }, dataEntity);
+    await this.poCRepository.update({ id: PoCId }, dataEntity);
     return this.poCRepository.findOne({ where: { id: PoCId } });
   }
 

@@ -9,11 +9,12 @@ import {
   Res,
   UploadedFile,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileManagerService } from '../services/filemanager.service';
 import { storageImage, ApiFile } from '../../../configs/config';
-import { UpDto } from '../common/dtos/filemanager.dto';
 import {
   ApiTags,
   ApiOkResponse,
@@ -24,6 +25,7 @@ import {
 
 @ApiTags('file')
 @Controller('file')
+@UsePipes(new ValidationPipe())
 export class FileManagerController {
   constructor(private fileManagerService: FileManagerService) {}
 
@@ -32,30 +34,33 @@ export class FileManagerController {
     description: 'SUCCESSFULL RESPONSE: Get all images of a user.',
   })
   @ApiForbiddenResponse({ description: 'FORBIDDEN.' })
-  getAllImageByUser(@Param('user') user: string) {
-    return this.fileManagerService.getAllImage(user);
+  getAllImageByUser(@Param('user') user_id: number) {
+    return this.fileManagerService.getAllImage(user_id);
   }
 
-  @Post()
+  @Post(':user')
   @ApiConsumes('multipart/form-data')
   @ApiFile('image')
   @ApiCreatedResponse({ description: 'SUCCESSFULL RESPONSE: Create a file.' })
   @ApiForbiddenResponse({ description: 'FORBIDDEN.' })
   @UseInterceptors(FileInterceptor('image', storageImage))
-  upImage(@UploadedFile() file: Express.Multer.File, @Body() body: UpDto) {
-    return this.fileManagerService.upImage(file, body.user_id);
+  upImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('user') user_id: number
+  ) {
+    return this.fileManagerService.upImage(file, user_id);
   }
 
-  @Get(':image')
+  @Get('src/:image')
   @ApiOkResponse({
     description: 'SUCCESSFULL RESPONSE: Get an image by its id.',
   })
   @ApiForbiddenResponse({ description: 'FORBIDDEN.' })
-  getImage(@Param('image') image: string, @Res() res) {
+  getImage(@Param('image') image: string, @Res() res: any) {
     return res.sendFile(image, { root: 'uploads/images' });
   }
 
-  @Put(':image')
+  @Put('src/:user_id/:image')
   @ApiConsumes('multipart/form-data')
   @ApiFile('image')
   @ApiOkResponse({ description: 'SUCCESSFULL RESPONSE: Update a file.' })
@@ -63,16 +68,19 @@ export class FileManagerController {
   @UseInterceptors(FileInterceptor('image', storageImage))
   updateImage(
     @UploadedFile() file: Express.Multer.File,
-    @Param('image') image: string,
-    @Body() body: UpDto
+    @Param('user_id') user_id: number,
+    @Param('image') image: string
   ) {
-    return this.fileManagerService.updateImage(file, image, body.user_id);
+    return this.fileManagerService.updateImage(file, image, user_id);
   }
 
-  @Delete(':image')
+  @Delete('src/:user_id/:image')
   @ApiOkResponse({ description: 'SUCCESSFULL RESPONSE: Delete a file.' })
   @ApiForbiddenResponse({ description: 'FORBIDDEN.' })
-  removeImage(@Param('image') image: string, @Body() body: UpDto) {
-    return this.fileManagerService.removeImage(image, body.user_id);
+  removeImage(
+    @Param('user_id') user_id: number,
+    @Param('image') image: string
+  ) {
+    return this.fileManagerService.removeImage(image, user_id);
   }
 }

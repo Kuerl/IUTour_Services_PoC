@@ -10,9 +10,9 @@ export class FileManagerService {
     private fileManagerRepository: FileManagerRepository,
     private poCRepository: PoCRepository
   ) {}
-  async getAllImage(user: string): Promise<FileManagerEntity[]> {
+  async getAllImage(user_id: number): Promise<FileManagerEntity[]> {
     const userQuery = await this.poCRepository.findOne({
-      where: { username: user },
+      where: { id: user_id },
     });
     if (!userQuery) {
       throw new BadRequestException();
@@ -46,7 +46,7 @@ export class FileManagerService {
       where: { id: image },
       relations: ['user'],
     });
-    if (!willBeUpdatedImage || willBeUpdatedImage.user.id !== user_id) {
+    if (!willBeUpdatedImage || willBeUpdatedImage.user.id !== Number(user_id)) {
       throw new BadRequestException();
     }
     const imageInfor = plainToClass(FileManagerEntity, { id: file.filename });
@@ -62,7 +62,7 @@ export class FileManagerService {
       where: { id: image },
       relations: ['user'],
     });
-    if (!willBeRemovedImage || willBeRemovedImage.user.id !== user_id) {
+    if (!willBeRemovedImage || willBeRemovedImage.user.id !== Number(user_id)) {
       throw new BadRequestException();
     }
     return this.fileManagerRepository.delete(image);

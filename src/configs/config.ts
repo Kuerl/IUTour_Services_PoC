@@ -20,7 +20,7 @@ export const storageImage = {
 };
 
 export const ApiFile =
-  (fileName = 'file', user_id = 'user_id'): MethodDecorator =>
+  (fileName = 'file'): MethodDecorator =>
   (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     ApiBody({
       schema: {
@@ -29,10 +29,6 @@ export const ApiFile =
           [fileName]: {
             type: 'string',
             format: 'binary',
-          },
-          [user_id]: {
-            type: 'number',
-            format: 'decimal',
           },
         },
       },
